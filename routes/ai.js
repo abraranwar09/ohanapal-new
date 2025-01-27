@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const { generateChatName } = require('../utils/nameGenerator');
 const ChatHistory = require('../models/chatHistoryModel');
 const puppeteer = require('puppeteer');
-
+// const fetch = require('node-fetch');
+const axios = require('axios');
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -502,8 +503,25 @@ router.post('/clean-html', async (req, res) => {
     }
 });
 
-// ... existing code ...
-
+// Endpoint to get an ephemeral API key
+router.get("/session", async (req, res) => {
+    try {
+      const response = await axios.post("https://api.openai.com/v1/realtime/sessions", {
+        model: "gpt-4o-realtime-preview-2024-12-17",
+        voice: "verse",
+      }, {
+        headers: {
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        }
+      });
+      const data = response.data;
+      res.json(data);
+    } catch (error) {
+      res.status(500).send("Error fetching ephemeral key");
+    }
+  });
+  
 
 module.exports = router;
 

@@ -313,16 +313,26 @@ async function scrapeWeb(url) {
     }
 }
 
+async function open_google(query) {
+
+    const url = `https://www.google.com/search?q=${query}`;
+    window.open(url, '_blank');
+    return {"status": "success",
+      "message": `Google opened for: ${query}`
+    };
+  }
+
 //computer control function
 
 async function executeComputerCommand(command) {
     // Create a modal container
     const modal = document.createElement('div');
+    modal.classList.add('animate__animated', 'animate__slideInDown');
     modal.style.position = 'fixed';
     modal.style.top = '0';
     modal.style.left = '0';
     modal.style.width = '100vw';
-    modal.style.height = '100vh';
+    modal.style.height = '50vh';
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     modal.style.display = 'flex';
     modal.style.justifyContent = 'center';
@@ -340,7 +350,7 @@ async function executeComputerCommand(command) {
 
     // Create an iframe
     const iframe = document.createElement('iframe');
-    iframe.src = 'http://localhost:6080/vnc.html';
+    iframe.src = 'https://ctool.ohanapal.bot/vnc.html?view_only=1&autoconnect=1&resize=scale';
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.border = 'none';
@@ -362,7 +372,7 @@ async function executeComputerCommand(command) {
     });
 
     try {
-        const response = await fetch("http://localhost:3000/run-command", {
+        const response = await fetch("https://vm.ohanapal.bot/run-command", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -371,11 +381,12 @@ async function executeComputerCommand(command) {
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was invalid');
         }
 
-        console.log(response);
         const data = await response.text();
+        console.log(data);
+
 
         const structuredData = {
             "status": "success",

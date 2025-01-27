@@ -7,14 +7,6 @@ function connectWebSocket() {
 
     websocket.onopen = () => {
         console.log('WebSocket connection established');
-        // Send initial start message
-        const startMessage = {
-            type: "start",
-            command: "source ~/venv/bin/activate && interpreter --os"
-        };
-        
-        websocket.send(JSON.stringify(startMessage));
-        console.log('Start message sent:', startMessage);
     };
 
     websocket.onmessage = (event) => {
@@ -40,8 +32,7 @@ async function executeComputerCommand(command) {
     try {
         // Send command to websocket
         const message = {
-            type: "input",
-            input: command
+            message: command
         };
         websocket.send(JSON.stringify(message));
 

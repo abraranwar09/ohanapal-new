@@ -17,3 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('generalChatCard').addEventListener('click', () => {
     window.location.href = '/chat';
 });
+
+// Realtime Chat Card
+document.getElementById('realtimeChatCard').addEventListener('click', () => {
+    window.location.href = '/realtime-chat';
+});

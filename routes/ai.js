@@ -11,7 +11,9 @@ const axios = require('axios');
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    // apiKey: process.env.OPENAI_API_KEY
+    baseURL: 'http://localhost:11434/v1',
+    apiKey: 'ollama'
 });   
 
 // Middleware to parse JSON bodies
@@ -76,7 +78,7 @@ router.post('/chat', async (req, res) => {
 
         // Prepare messages for OpenAI
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "llama3.2",
             messages: cleanedMessages,
             temperature: custom_temp ? parseFloat(custom_temp) : 0.7,
             ...(tools && tools.length > 0 ? {
@@ -180,7 +182,7 @@ router.post('/tool-response', async (req, res) => {
 
         // Get OpenAI's response to all tool results
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "llama3.2",
             messages: cleanedMessages,
             temperature: 0.7
         });
@@ -270,7 +272,7 @@ router.get('/history/list/:user_id', async (req, res) => {
 router.get('/suggest', async (req, res) => {
     try {
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "llama3.2",
             messages: [
                 { 
                     role: "system", 
@@ -476,7 +478,7 @@ router.post('/clean-html', async (req, res) => {
         // Use OpenAI to clean HTML and return plain text
         
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "llama3.2",
             messages: [
                 { 
                     role: "system", 

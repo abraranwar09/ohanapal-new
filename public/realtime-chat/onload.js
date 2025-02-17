@@ -9,9 +9,11 @@ window.addEventListener('load', () => {
         container: document.getElementById('lottieAnimation'),
         renderer: 'svg',
         loop: true,
-        autoplay: true,
+        autoplay: false,
         path: '../assets/loader2.json' // Path to your Lottie animation file
     });
+
+    window.animation = animation;
 
     // Initialize Lottie animation for the background
     var bgAnimation = lottie.loadAnimation({

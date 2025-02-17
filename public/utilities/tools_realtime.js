@@ -198,6 +198,17 @@ const tools = [
                 query: { type: "string", description: "The search query to use on Google" }
             }
         }
+    },
+    {
+        type: "function",
+        name: "open_input_box",
+        description: "Opens the text input box so users can type a specific message when you need an email address or a phone number, etc.",
+        parameters: {
+            type: "object",
+            properties: {
+                placeholder: { type: "string", description: "The placeholder text to display in the input box" }
+            }
+        }
     }
 ];
 

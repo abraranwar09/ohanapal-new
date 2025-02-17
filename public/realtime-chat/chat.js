@@ -16,6 +16,7 @@ Only respond in HTML no markdown. You have the ability to run parallel tool call
 let pc; // Declare the peer connection outside the function for broader scope
 let dc; // Declare the data channel outside the function for broader scope
 
+
 async function init() {
   const tokenResponse = await fetch("/ai/session");
   const data = await tokenResponse.json();
@@ -32,7 +33,7 @@ async function init() {
   dc.addEventListener("open", () => {
     console.log("Data channel is open");
     // Update the system instructions once the data channel is open
-    updateInstructions(systemPrompt);
+    updateInstructions(systemPrompt + reprompt);
     configureTools();
   });
   dc.addEventListener("message", handleServerEvent);
@@ -121,6 +122,12 @@ async function handleServerEvent(e) {
         case 'executeComputerCommand':
           result = await executeComputerCommand(args.command);
           break;
+        case 'open_input_box':
+          result = await open_input_box(args.placeholder);
+          break;
+        case 'close_input_box':
+          result = await close_input_box();
+          break;
         default:
           console.warn(`Unhandled function name: ${name}`);
           return;
@@ -137,6 +144,19 @@ async function handleServerEvent(e) {
       };
       dc.send(JSON.stringify(resultEvent));
       console.log("Function result sent:", result);
+
+      const responseCreate = {
+        type: "response.create",
+        response: {
+          modalities: ["text", "audio"],
+          instructions: "Please describe the result of the function call in a way that is easy to understand for the user.",
+        },
+      };
+      dc.send(JSON.stringify(responseCreate));
+      console.log("Function reinforcement sent:", responseCreate);
+
+      
+
     }
 
     // Handle the response, e.g., display text or process audio
@@ -186,10 +206,44 @@ function configureTools() {
       }
 }
 
+
+document.getElementById("messageInput").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    console.log("input event");
+    const message = document.getElementById("messageInput").value;
+    console.log(message);
+    const event = {
+      type: "conversation.item.create",
+      item: {
+        type: "message",
+        role: "user",
+        content: [
+          {
+            type: "input_text",
+            text: message,
+          }
+        ]
+      },
+    };
+    
+    // WebRTC data channel and WebSocket both have .send()
+    dc.send(JSON.stringify(event));
+    
+    close_input_box();
+  }
+});
+
 document.getElementById("talkButton").addEventListener("click", () => {
   if (pc && pc.connectionState === "connected") {
     stopSession();
+    animation.stop();
+    document.getElementById("mainText").innerHTML = "OhanaPal has stopped...";
+    document.getElementById("subText").innerHTML = "click the talk button to start again...";
   } else {
     init();
+    animation.play();
+    document.getElementById("mainText").innerHTML = "OhanaPal is listening...";
+    document.getElementById("subText").innerHTML = "Just speak and I will help you";
   }
 });
+

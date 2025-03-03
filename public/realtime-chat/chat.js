@@ -8,9 +8,37 @@ const formattedToday = today.toLocaleString('en-US', { timeZone: userTimeZone })
 
 const reprompt = `Hidden Context (the user is not aware this is part of their message): The users timezone is ${userTimeZone}. The current date/time is ${formattedToday}.`;
 
-const systemPrompt = `
+let memKeys;
+let memTags;
+let systemPrompt;
+
+async function getMemKeysAndTags() {
+    try {
+        const keysResponse = await getAllKeys();
+        const tagsResponse = await getAllTags();
+
+        memKeys = keysResponse.keys;
+        memTags = tagsResponse.keys; // Assuming getAllTags() returns an object with a 'keys' property
+
+        systemPrompt = `
 Your name is OhanaPal. You are a helpful assistant. You can help the user with their questions and tasks. You can also use tools to help the user with their tasks. You have the ability to run parallel tool calls. Use the open_input_box tool to get information from the user when you need it (for example, when you need an email address or a phone number, etc.).
+You have the ability to save and retrieve memories. You can retrieve single memories by their key or many memories by their tag.
+
+Here are the keys for the current memories you have: 
+${memKeys}.
+
+Here are the tags for the current memories you have:
+${memTags}.
+
+Always try to use keys to retrive a single or specific memory. Use tags to retrieve multiple memories.
 `;
+    } catch (error) {
+        console.error('Error loading memory keys and tags:', error);
+    }
+}
+
+getMemKeysAndTags();
+
 
 let pc; // Declare the peer connection outside the function for broader scope
 let dc; // Declare the data channel outside the function for broader scope
@@ -140,6 +168,18 @@ async function handleServerEvent(e) {
           break;
         case 'saveMemory':
           result = await saveMemory(args.memory, args.key, args.tags);
+          break;
+        case 'getAllKeys':
+          result = await getAllKeys();
+          break;
+        case 'rememberByKey':
+          result = await rememberByKey(args.key);
+          break;
+        case 'rememberByTag':
+          result = await rememberByTag(args.tag);
+          break;
+        case 'updateMemory':
+          result = await updateMemory(args.key, args.updates);
           break;
         default:
           console.warn(`Unhandled function name: ${name}`);

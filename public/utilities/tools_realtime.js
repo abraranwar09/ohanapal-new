@@ -236,6 +236,67 @@ const tools = [
             required: ["memory", "key", "tags"],
             additionalProperties: false
         }
+    },
+    {
+        type: "function",
+        name: "getAllKeys",
+        description: "Gets all the keys for every memory of the current user."
+    },
+    {
+        type: "function",
+        name: "rememberByKey",
+        description: "Retrieves a memory by its key.",
+        parameters: {
+            type: "object",
+            properties: {
+                key: { type: "string", description: "The key of the memory to retrieve" }
+            }
+        }
+    },
+    {
+        type: "function",
+        name: "rememberByTag",
+        description: "Retrieves all memories for a given tag.",
+        parameters: {
+            type: "object",
+            properties: {
+                tag: { type: "string", description: "The tag of the memories to retrieve" }
+            }
+        }
+    },
+    {
+        type: "function",
+        name: "updateMemory",
+        description: "Updates an existing memory with new information or tags.",
+        parameters: {
+            type: "object",
+            properties: {
+                key: {
+                    type: "string",
+                    description: "The unique key of the memory to update."
+                },
+                updates: {
+                    type: "object",
+                    description: "An object containing the fields to update in the memory. The fields can be memory or tags.",
+                    properties: {
+                        memory: {
+                            type: "string",
+                            description: "The updated memory content."
+                        },
+                        tags: {
+                            type: "array",
+                            items: {
+                                type: "string"
+                            },
+                            description: "The updated tags for the memory."
+                        }
+                    },
+                    additionalProperties: true // Allows for any fields to be updated
+                }
+            },
+            required: ["key", "updates"],
+            additionalProperties: false
+        }
     }
 ];
 

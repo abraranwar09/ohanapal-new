@@ -79,4 +79,19 @@ router.get('/remember-by-tag', async (req, res) => {
     }
 });
 
+// GET /all-tags
+router.get('/all-tags', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) {
+            return res.status(400).send({ error: 'Email is required.' });
+        }
+        const tags = await Memory.find({ email }).distinct('tags');
+        res.send(tags);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 module.exports = router;
+

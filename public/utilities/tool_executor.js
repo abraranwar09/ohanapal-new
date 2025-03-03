@@ -467,6 +467,7 @@ async function saveMemory(memory, key, tags) {
         const data = await response.json();
 
         const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = '';
         alertContainer.innerHTML = `<div class="memory-alert">
             <div class="memory-alert-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -482,3 +483,229 @@ async function saveMemory(memory, key, tags) {
         throw error;
     }
 }
+
+async function getAllKeys() {
+    const email = localStorage.getItem('email');
+    if (!email) {
+        throw new Error('Email is required to get all keys.');
+    }
+
+    try {
+        const response = await fetch(`/memories/all-keys?email=${encodeURIComponent(email)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch keys');
+        }
+
+        const keys = await response.json();
+
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `<div class="memory-alert">
+            <div class="memory-alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 5v14h16V5H4zm14 2v10H6V7h12zM9 9H7v6h2V9zm4 0h-2v6h2V9zm4 0h-2v6h2V9z"/>
+                </svg>
+            </div>
+            <div class="memory-alert-text">Memory keys retrieved</div>
+        </div>`
+
+        return {
+            "status": "success",
+            "keys": keys
+        };
+    } catch (error) {
+        console.error('Error fetching keys:', error);
+        return {
+            "status": "error",
+            "message": `There was an error fetching the keys. Please try again later.`
+        };
+    }
+}
+
+async function getAllTags() {
+    const email = localStorage.getItem('email');
+    if (!email) {
+        throw new Error('Email is required to get all keys.');
+    }
+
+    try {
+        const response = await fetch(`/memories/all-tags?email=${encodeURIComponent(email)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch keys');
+        }
+
+        const keys = await response.json();
+
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `<div class="memory-alert">
+            <div class="memory-alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 5v14h16V5H4zm14 2v10H6V7h12zM9 9H7v6h2V9zm4 0h-2v6h2V9zm4 0h-2v6h2V9z"/>
+                </svg>
+            </div>
+            <div class="memory-alert-text">Memories loaded...</div>
+        </div>`
+
+        return {
+            "status": "success",
+            "keys": keys
+        };
+    } catch (error) {
+        console.error('Error fetching keys:', error);
+        return {
+            "status": "error",
+            "message": `There was an error fetching the keys. Please try again later.`
+        };
+    }
+}
+
+async function rememberByKey(key) {
+    const email = localStorage.getItem('email');
+    if (!email) {
+        throw new Error('Email is required to retrieve a memory.');
+    }
+
+    try {
+        const response = await fetch(`/memories/remember-by-key?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to retrieve memory');
+        }
+
+        const data = await response.json();
+
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `<div class="memory-alert">
+            <div class="memory-alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 5v14h16V5H4zm14 2v10H6V7h12zM9 9H7v6h2V9zm4 0h-2v6h2V9zm4 0h-2v6h2V9z"/>
+                </svg>
+            </div>
+            <div class="memory-alert-text">Memory retrieved for key: ${key}</div>
+        </div>`
+
+    
+        return data;
+    } catch (error) {
+        console.error('Error retrieving memory:', error);
+        return {
+            "status": "error",
+            "message": `There was an error retrieving the memory. Please try again later.`
+        };
+    }
+}
+
+async function rememberByTag(tag) {
+    const email = localStorage.getItem('email');
+    if (!email) {
+        throw new Error('Email is required to retrieve a memory.');
+    }
+
+    try {
+        const response = await fetch(`/memories/remember-by-tag?email=${encodeURIComponent(email)}&tag=${encodeURIComponent(tag)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to retrieve memory');
+        }
+
+        const data = await response.json();
+
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `<div class="memory-alert">
+            <div class="memory-alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 5v14h16V5H4zm14 2v10H6V7h12zM9 9H7v6h2V9zm4 0h-2v6h2V9zm4 0h-2v6h2V9z"/>
+                </svg>
+            </div>
+            <div class="memory-alert-text">Memories retrieved for tag: ${tag}</div>
+        </div>`
+
+        return data;
+    } catch (error) {
+        console.error('Error retrieving memory:', error);
+        return {
+            "status": "error",
+            "message": `There was an error retrieving the memory. Please try again later.`
+        };
+    }
+}
+
+async function updateMemory(key, updates) {
+
+    const email = localStorage.getItem('email');    
+    
+    if (!email) {
+        throw new Error('Email is required to update a memory.');
+    }
+    if (!key) {
+        throw new Error('Key is required to update a memory.');
+    }
+
+    try {
+        const response = await fetch('/memories/update-memory', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                key,
+                ...updates
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update memory');
+        }
+
+        const data = await response.json();
+
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `<div class="memory-alert">
+            <div class="memory-alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 5v14h16V5H4zm14 2v10H6V7h12zM9 9H7v6h2V9zm4 0h-2v6h2V9zm4 0h-2v6h2V9z"/>
+                </svg>
+            </div>
+            <div class="memory-alert-text">Memory updated for key: ${key}</div>
+        </div>`
+
+        return {
+            "status": "success",
+            "data": data
+        };
+    } catch (error) {
+        console.error('Error updating memory:', error);
+        return {
+            "status": "error",
+            "message": `There was an error updating the memory. Please try again later.`
+        };
+    }
+}
+

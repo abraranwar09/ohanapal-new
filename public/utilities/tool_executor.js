@@ -438,5 +438,47 @@ async function close_input_box() {
     };
 }
 
+async function saveMemory(memory, key, tags) {
+    const email = localStorage.getItem('email');
+    if (!email) {
+        throw new Error('Email is required to save a memory.');
+    }
 
+    const body = {
+        memory,
+        key,
+        tags,
+        email
+    };
 
+    try {
+        const response = await fetch('/memories/create-memory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save memory');
+        }
+
+        const data = await response.json();
+
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = `<div class="memory-alert">
+            <div class="memory-alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 5v14h16V5H4zm14 2v10H6V7h12zM9 9H7v6h2V9zm4 0h-2v6h2V9zm4 0h-2v6h2V9z"/>
+                </svg>
+            </div>
+            <div class="memory-alert-text">Memory updated</div>
+        </div>`
+        
+        return data;
+    } catch (error) {
+        console.error('Error saving memory:', error);
+        throw error;
+    }
+}

@@ -209,6 +209,33 @@ const tools = [
                 placeholder: { type: "string", description: "The placeholder text to display in the input box" }
             }
         }
+    },
+    {
+        type: "function",
+        name: "saveMemory",
+        description: "Saves a memory with a unique key and associated tags.",
+        parameters: {
+            type: "object",
+            properties: {
+                memory: {
+                    type: "string",
+                    description: "A string containing all the information you want to save to this particular memory."
+                },
+                key: {
+                    type: "string",
+                    description: "A unique alphanumeric key with text and timestamp, providing context about the memory. this key should contain helpful context as to what is in the memory. example: catfeeding12039123"
+                },
+                tags: {
+                    type: "array",
+                    items: {
+                        type: "string"
+                    },
+                    description: "Tags that help identify the contents of the memory. Use multiple tags. These should be useful for retrieval and context. Example: ['cat', 'feeding', 'reminders']"
+                }
+            },
+            required: ["memory", "key", "tags"],
+            additionalProperties: false
+        }
     }
 ];
 

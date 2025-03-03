@@ -42,6 +42,9 @@ async function handleToolCalls(data, skeletonLoader) {
                 case 'executeComputerCommand':
                     functionResponse = await executeComputerCommand(args.command);
                     break;
+                case 'saveMemory':
+                    functionResponse = await saveMemory(args.memory, args.key, args.tags);
+                    break;
                 default:
                     console.warn(`Unhandled function name: ${functionName}`);
                     return null;

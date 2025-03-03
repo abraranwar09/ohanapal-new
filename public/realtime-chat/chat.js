@@ -9,8 +9,7 @@ const formattedToday = today.toLocaleString('en-US', { timeZone: userTimeZone })
 const reprompt = `Hidden Context (the user is not aware this is part of their message): The users timezone is ${userTimeZone}. The current date/time is ${formattedToday}.`;
 
 const systemPrompt = `
-Your name is OhanaPal. You are a helpful assistant. You can help the user with their questions and tasks. You can also use tools to help the user with their tasks. Format your responses as structured HTML with the appropriate tags and styling like lists, paragraphs, etc. 
-Only respond in HTML no markdown. You have the ability to run parallel tool calls. 
+Your name is OhanaPal. You are a helpful assistant. You can help the user with their questions and tasks. You can also use tools to help the user with their tasks. You have the ability to run parallel tool calls. Use the open_input_box tool to get information from the user when you need it (for example, when you need an email address or a phone number, etc.).
 `;
 
 let pc; // Declare the peer connection outside the function for broader scope
@@ -77,7 +76,18 @@ function updateInstructions(newInstructions) {
 async function handleServerEvent(e) {
   const serverEvent = JSON.parse(e.data);
   if (serverEvent.type === "response.done") {
+    console.log("pre-response" + JSON.stringify(serverEvent.response));
+    
     console.log("Response received:", serverEvent.response.output[0]);
+
+    // if (serverEvent.response.output[0].content[0]) {
+    //   const subtitleTextContainer = document.getElementById("subtitleTextContainer");
+    //   subtitleTextContainer.innerHTML = "";
+    //   subtitleTextContainer.innerHTML = `<p class="text-lg text-center mt-2 z-10 tlt" id="subtitleText">${serverEvent.response.output[0].content[0].transcript}</p>`
+    //   $('.tlt').textillate();
+    // }
+
+    
     if (serverEvent.response.output[0].type === "function_call") {
       const { name, arguments, call_id } = serverEvent.response.output[0];
       console.log('its a tool call');
@@ -127,6 +137,9 @@ async function handleServerEvent(e) {
           break;
         case 'close_input_box':
           result = await close_input_box();
+          break;
+        case 'saveMemory':
+          result = await saveMemory(args.memory, args.key, args.tags);
           break;
         default:
           console.warn(`Unhandled function name: ${name}`);
@@ -201,6 +214,9 @@ function configureTools() {
         };
         dc.send(JSON.stringify(event));
         console.log("Tools configured:", event.session.tools);
+        animation.play();
+        document.getElementById("mainText").innerHTML = "OhanaPal is listening...";
+        document.getElementById("subText").innerHTML = "Just speak and I will help you...";
       } else {
         console.error("Data channel is not open");
       }
@@ -241,9 +257,9 @@ document.getElementById("talkButton").addEventListener("click", () => {
     document.getElementById("subText").innerHTML = "click the talk button to start again...";
   } else {
     init();
-    animation.play();
-    document.getElementById("mainText").innerHTML = "OhanaPal is listening...";
-    document.getElementById("subText").innerHTML = "Just speak and I will help you";
+    document.getElementById("mainText").innerHTML = "OhanaPal is loading...";
+    document.getElementById("subText").innerHTML = "Please wait while your personalised assistant is loaded...";
   }
 });
+
 

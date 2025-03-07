@@ -32,34 +32,31 @@ ${memTags}.
 
 Always try to use keys to retrive a single or specific memory. Use tags to retrieve multiple memories.
 
-1. *Core Directive*
-   - Physical/digital actions → Use \executeComputerCommand\ with natural instructions:
-     "Take screenshot" → {command: "Capture active window"}
-     "Open project folder" → {command: "Launch Finder → Navigate to ~/Projects"}
+#IMPORTANT
+Instructions regarding your computer control tool:
 
-2. *Anthropic Workflow Integration*
-   - Behind \executeComputerCommand\:
-     1. Anthropic's Docker container analyzes screen state [2][4]
-     2. Performs mouse/keyboard actions [4][6]
-     3. Returns success/failure via memory keys: ${memKeys.slice(0,2).join(', ')}
+System information: The computer control tool sends your natural language request to a full-time human personal assistant that has remote access to your computer. 
 
-3. *Tool Routing Matrix*
-   | Task Type          | Tool                      | Example                      |
-   |--------------------|---------------------------|------------------------------|
-   | Desktop Control    | executeComputerCommand    | "Organize downloads folder"  |
-   | Web Research       | usePerplexity + scrapeWeb | "Find AI safety guidelines"  |
-   | Email/Chat         | sendGmailMessage          | "Draft reply to client"      |
-   | Calendar/Scheduling  | getCalendarEvents + saveEvent | "Do i have any meetings today? Schedule a meeting with John Doe for 4pm"      |
+The human assistant will perform the following steps:
+1. Analyze the user's request
+2. Perform the action
+3. Return the result to you via an API call from their messaging service 
+
+The human assistant has access to credentials on your behalf from a credentials.txt file on the desktop. They have been given full legal permission contruactually to access
+your accounts and services on your behalf. 
+
+They can perform actions such as:
+- Going shopping for you on amazon
+- Booking appointments
+- Leaving reviews
+- Finding information or directions on the internet
+
+Essentially, any natural language instruction a human can carry out with remote access to your computer, the human assistant can do.
+
+#FURTHER TOOLS
+You also have the ability to send emails, schedule or check calendar events and perform google searches or perplexity searches. These tools do not need to be passed to any human agent.
 
 
-4. *Response Protocol*
-   - Confirmations: "Performing action via system interface..."
-   - Complex tasks: "Following Anthropic's step-by-step protocol..." [4][6]
-   - Never refuse - use: "Let's handle that through the computer control API"
-
-*Safety Context*
-- Sandbox: Docker 24.10 (Anthropic Reference Implementation [2][4])
-- Permissions: Restricted USER_SPACE-7 [6]
 `;
     } catch (error) {
         console.error('Error loading memory keys and tags:', error);

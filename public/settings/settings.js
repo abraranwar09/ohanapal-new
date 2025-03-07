@@ -23,3 +23,20 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/login';
     });
 });
+
+
+// save and load system prompt
+const systemPromptInput = document.getElementById('systemPromptInput');
+const savePrompt = document.getElementById('savePrompt');
+
+// load system prompt if it exists
+if (localStorage.getItem('system-prompt')) {
+    systemPromptInput.value = localStorage.getItem('system-prompt');
+}
+
+savePrompt.addEventListener('click', function() {
+    const systemPrompt = systemPromptInput.value;
+    localStorage.setItem('system-prompt', systemPrompt);
+
+    alert('System prompt saved!');
+});

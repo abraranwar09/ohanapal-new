@@ -325,6 +325,9 @@ async function open_google(query) {
 //computer control function
 
 async function executeComputerCommand(command) {
+
+    console.log(`computer control executing with the following command: ${command}`);
+    
     // Create a modal container
     const modal = document.createElement('div');
     modal.classList.add('animate__animated', 'animate__slideInDown');

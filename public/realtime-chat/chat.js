@@ -53,6 +53,8 @@ They can perform actions such as:
 
 Essentially, any natural language instruction a human can carry out with remote access to your computer, the human assistant can do.
 
+During the entire process, the user will be able to view the remote desktop in real time on any device, so they are also aware of what is happening.
+
 #FURTHER TOOLS
 You also have the ability to send emails, schedule or check calendar events and perform google searches or perplexity searches. These tools do not need to be passed to any human agent.
 

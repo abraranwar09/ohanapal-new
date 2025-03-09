@@ -3,16 +3,18 @@ let websocket = null;
 function connectWebSocket() {
     console.log('Attempting to connect to WebSocket...');
     
-    websocket = new WebSocket('wss://treefrog-shining-unlikely.ngrok-free.app');
+    websocket = new WebSocket('wss://vm.ohanapal.bot');
 
     websocket.onopen = () => {
         console.log('WebSocket connection established');
+        // send command to websocket
+        websocket.send(`{"type": "start-session"}`);
     };
 
-    websocket.onmessage = (event) => {
-        console.log('Received message:', event.data);
-        // Handle incoming messages here
-    };
+    // websocket.onmessage = (event) => {
+    //     console.log('Received message:', event.data);
+    //     // Handle incoming messages here
+    // };
 
     websocket.onerror = (error) => {
         console.error('WebSocket error:', error);
@@ -26,63 +28,80 @@ function connectWebSocket() {
 
 // new computer command function
 async function executeComputerCommand(command) {
-    let wsResponse = "";  // Initialize response aggregator
-    
+    console.log(`computer control executing with the following command: ${command}`);
 
-    try {
-        // Send command to websocket
-        const message = {
-            message: command
-        };
-        websocket.send(JSON.stringify(message));
+    // Check if modal is already open
+    const modal = document.getElementById('computer-control-modal');
+    if (!modal) {
+        // Create a modal container
+        const modal = document.createElement('div');
+        modal.id = 'computer-control-modal';
+        modal.classList.add('animate__animated', 'animate__slideInDown');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '50vh';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
 
-        // Create promise to handle websocket responses
-        await new Promise((resolve, reject) => {
-            const messageHandler = (event) => {
-                wsResponse += event.data;  // Aggregate responses
-                let mainOutput;
-                try {
-                    mainOutput = JSON.parse(event.data);
-                    console.log(mainOutput);
-                    // Check for either command prompt or exit message
-                    if (event.data.includes("> ") || (event.type === "exit")) {
+        // Create a popup content
+        const popupContent = document.createElement('div');
+        popupContent.style.width = '90%';
+        popupContent.style.height = '90%';
+        popupContent.style.backgroundColor = 'white';
+        popupContent.style.borderRadius = '10px';
+        popupContent.style.overflow = 'hidden';
+        popupContent.style.position = 'relative';
 
-                        const responseLines = wsResponse.split('\n');
-                        const last30Lines = responseLines.slice(-30).join('\n');
+        // Create an iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://ctool.ohanapal.bot/?view_only=1&autoconnect=1&resize=scale';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
 
-                        const toolCallResults = {
-                            status: "success",
-                            response: JSON.stringify(last30Lines)
-                        };
-                        
-                        websocket.removeEventListener('message', messageHandler);
-                        resolve(toolCallResults);
-                    }
-                } catch (error) {
-                    console.error('Error parsing message:', error);
-                }
-            };
+        // Append iframe to popup content
+        popupContent.appendChild(iframe);
 
-            // Add temporary message handler
-            websocket.addEventListener('message', messageHandler);
-            
-            // // Optional: Add timeout
-            // setTimeout(() => {
-            //     websocket.removeEventListener('message', messageHandler);
-            //     reject(new Error('WebSocket response timeout'));
-            // }, 30000);  // 30 second timeout
-        }).then(toolCallResults => {
-            console.log(toolCallResults);
-            return toolCallResults;
+        // Append popup content to modal
+        modal.appendChild(popupContent);
+
+        // Append modal to body
+        document.body.appendChild(modal);
+
+        // Close modal when clicking outside of the popup content
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                document.body.removeChild(modal);
+            }
         });
-
-    } catch (error) {
-        console.error('Error in executeComputerCommand:', error);
-        return {
-            "status": "error",
-            "response": "There was an error with computer connect. Either your computer is turned off or the connection could not be established."
-        }
     }
+
+
+    // Return a promise that resolves when a result message is received
+    return new Promise((resolve, reject) => {
+        websocket.send(`{"type": "command", "command": "${command}"}`);
+
+        websocket.onmessage = (event) => {
+            console.log('Received message:', event.data);
+            const parsedData = JSON.parse(event.data);
+            if (parsedData.type === 'result') {
+                console.log('Result:', parsedData.message);
+                resolve({
+                    status: 'success',
+                    message: parsedData.message
+                });
+            }
+        };
+
+        websocket.onerror = (error) => {
+            reject(error);
+        };
+    });
 }
 
 

@@ -324,95 +324,95 @@ async function open_google(query) {
 
 //computer control function
 
-async function executeComputerCommand(command) {
+// async function executeComputerCommand(command) {
 
-    console.log(`computer control executing with the following command: ${command}`);
-    
-    // Create a modal container
-    const modal = document.createElement('div');
-    modal.classList.add('animate__animated', 'animate__slideInDown');
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100vw';
-    modal.style.height = '50vh';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '1000';
+//     console.log(`computer control executing with the following command: ${command}`);
 
-    // Create a popup content
-    const popupContent = document.createElement('div');
-    popupContent.style.width = '90%';
-    popupContent.style.height = '90%';
-    popupContent.style.backgroundColor = 'white';
-    popupContent.style.borderRadius = '10px';
-    popupContent.style.overflow = 'hidden';
-    popupContent.style.position = 'relative';
+//     // Create a modal container
+//     const modal = document.createElement('div');
+//     modal.classList.add('animate__animated', 'animate__slideInDown');
+//     modal.style.position = 'fixed';
+//     modal.style.top = '0';
+//     modal.style.left = '0';
+//     modal.style.width = '100vw';
+//     modal.style.height = '50vh';
+//     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+//     modal.style.display = 'flex';
+//     modal.style.justifyContent = 'center';
+//     modal.style.alignItems = 'center';
+//     modal.style.zIndex = '1000';
 
-    // Create an iframe
-    const iframe = document.createElement('iframe');
-    iframe.src = 'https://ctool.ohanapal.bot/vnc.html?view_only=1&autoconnect=1&resize=scale';
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.border = 'none';
+//     // Create a popup content
+//     const popupContent = document.createElement('div');
+//     popupContent.style.width = '90%';
+//     popupContent.style.height = '90%';
+//     popupContent.style.backgroundColor = 'white';
+//     popupContent.style.borderRadius = '10px';
+//     popupContent.style.overflow = 'hidden';
+//     popupContent.style.position = 'relative';
 
-    // Append iframe to popup content
-    popupContent.appendChild(iframe);
+//     // Create an iframe
+//     const iframe = document.createElement('iframe');
+//     iframe.src = 'https://ctool.ohanapal.bot/vnc.html?view_only=1&autoconnect=1&resize=scale';
+//     iframe.style.width = '100%';
+//     iframe.style.height = '100%';
+//     iframe.style.border = 'none';
 
-    // Append popup content to modal
-    modal.appendChild(popupContent);
+//     // Append iframe to popup content
+//     popupContent.appendChild(iframe);
 
-    // Append modal to body
-    document.body.appendChild(modal);
+//     // Append popup content to modal
+//     modal.appendChild(popupContent);
 
-    // Close modal when clicking outside of the popup content
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
+//     // Append modal to body
+//     document.body.appendChild(modal);
 
-    try {
-        const response = await fetch("https://vm.ohanapal.bot/run-command", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ command })
-        });
+//     // Close modal when clicking outside of the popup content
+//     modal.addEventListener('click', (event) => {
+//         if (event.target === modal) {
+//             document.body.removeChild(modal);
+//         }
+//     });
 
-        if (!response.ok) {
-            throw new Error('Network response was invalid');
-        }
+//     try {
+//         const response = await fetch("https://vm.ohanapal.bot/run-command", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({ command })
+//         });
 
-        const data = await response.text();
-        console.log(data);
+//         if (!response.ok) {
+//             throw new Error('Network response was invalid');
+//         }
+
+//         const data = await response.text();
+//         console.log(data);
 
 
-        const structuredData = {
-            "status": "success",
-            "message": data
-        }
+//         const structuredData = {
+//             "status": "success",
+//             "message": data
+//         }
 
-        // Close the modal before returning data
-        document.body.removeChild(modal);
+//         // Close the modal before returning data
+//         document.body.removeChild(modal);
 
-        return structuredData;
+//         return structuredData;
 
-    } catch (error) {
-        console.error('Error executing computer command:', error);
+//     } catch (error) {
+//         console.error('Error executing computer command:', error);
 
-        // Close the modal in case of error
-        document.body.removeChild(modal);
+//         // Close the modal in case of error
+//         document.body.removeChild(modal);
 
-        return {
-            "status": "error",
-            "message": `There was an error executing the computer command. Please try again later.`
-        };
-    }
-}
+//         return {
+//             "status": "error",
+//             "message": `There was an error executing the computer command. Please try again later.`
+//         };
+//     }
+// }
 
 
 async function open_input_box(placeholder) {

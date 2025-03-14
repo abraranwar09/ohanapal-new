@@ -203,7 +203,7 @@ p#subtitleText {
 }
 
 #alertContainer {
-    z-index: 1000 !important;
+    z-index: 9999 !important;
 }
 
 .close-button {

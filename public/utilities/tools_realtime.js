@@ -143,22 +143,6 @@ const tools = [
     },
     {
         type: "function",
-        name: "checkKnowledgeBase",
-        description: "Search through the company's knowledge base for relevant information.",
-        parameters: {
-            type: "object",
-            properties: {
-                query: {
-                    type: "string",
-                    description: "The search query to look up in the knowledge base.",
-                },
-            },
-            required: ["query"],
-            additionalProperties: false,
-        },
-    },
-    {
-        type: "function",
         name: "scrapeWeb",
         description: "Scrapes content from a specified webpage URL.",
         parameters: {
@@ -173,32 +157,21 @@ const tools = [
             additionalProperties: false,
         },
     },
-    {
-        type: "function",
-        name: "executeComputerCommand",
-        description: "Executes a natural language computer control command through our computer control API using a sandboxed environment and a safe agent. You can execute any command. You can send any natural language command to control the computer not a bash command.",
-        parameters: {
-            type: "object",
-            properties: {
-                command: {
-                    type: "string",
-                    description: "The command to execute (any natural language command)"
-                }
-            },
-            required: ["command"]
-        }
-    },
-    {
-        type: "function",
-        name: "open_google",
-        description: "Opens Google with a search query.",
-        parameters: {
-            type: "object",
-            properties: {
-                query: { type: "string", description: "The search query to use on Google" }
-            }
-        }
-    },
+    // {
+    //     type: "function",
+    //     name: "executeComputerCommand",
+    //     description: "Executes a natural language computer control command through our computer control API using a sandboxed environment and a safe agent. You can execute any command. You can send any natural language command to control the computer not a bash command.",
+    //     parameters: {
+    //         type: "object",
+    //         properties: {
+    //             command: {
+    //                 type: "string",
+    //                 description: "The command to execute (any natural language command)"
+    //             }
+    //         },
+    //         required: ["command"]
+    //     }
+    // },
     {
         type: "function",
         name: "open_input_box",
@@ -297,6 +270,16 @@ const tools = [
             required: ["key", "updates"],
             additionalProperties: false
         }
+    },
+    {
+        type: "function",
+        name: "activateOhanaAct",
+        description: "Activates the Ohana Act mode. This mode allows you to control the computer using natural language commands. The user will control this from a separate interface. The user can start this by saying Activate Ohana Act, Conenct to my computer or start Act Mode."
+    },
+    {
+        type: "function",
+        name: "closeOhanaAct",
+        description: "Closes the Ohana Act mode."
     }
 ];
 

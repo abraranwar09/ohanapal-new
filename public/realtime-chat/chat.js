@@ -194,6 +194,12 @@ async function handleServerEvent(e) {
         case 'updateMemory':
           result = await updateMemory(args.key, args.updates);
           break;
+        case 'activateOhanaAct':
+          result = await activateOhanaAct();
+          break;
+        case 'closeOhanaAct':
+          result = await closeOhanaAct();
+          break;
         default:
           console.warn(`Unhandled function name: ${name}`);
           return;
@@ -277,30 +283,61 @@ function configureTools() {
 
 
 document.getElementById("messageInput").addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    console.log("input event");
-    const message = document.getElementById("messageInput").value;
-    console.log(message);
-    const event = {
-      type: "conversation.item.create",
-      item: {
-        type: "message",
-        role: "user",
-        content: [
-          {
-            type: "input_text",
-            text: message,
-          }
-        ]
-      },
-    };
-    
-    // WebRTC data channel and WebSocket both have .send()
-    dc.send(JSON.stringify(event));
-    
-    close_input_box();
+  if (localStorage.getItem('mode') != 'act') {
+    if (event.key === "Enter") {
+      console.log("input event");
+      const message = document.getElementById("messageInput").value;
+      console.log(message);
+      const event = {
+        type: "conversation.item.create",
+        item: {
+          type: "message",
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: message,
+            }
+          ]
+        },
+      };
+      
+      // WebRTC data channel and WebSocket both have .send()
+      dc.send(JSON.stringify(event));
+      
+      close_input_box();
+    }
+  };
+
+  if (localStorage.getItem('mode') === 'act') {
+    if (event.key === "Enter") {
+      console.log("input event");
+      const message = document.getElementById("messageInput").value;
+      console.log('sending command to computer: ' + message);
+
+      manageSocketSend(message);
+
+      document.getElementById("messageInput").value = '';
+    }
   }
+
+  
 });
+
+async function manageSocketSend(message) {
+  const socketResponse = await sendWebsocketMessage(message);
+  console.log('socket response: ' + socketResponse);
+
+  const responseCreate = {
+    type: "response.create",
+    response: {
+      modalities: ["text", "audio"],
+      instructions: `The user is currently controlling their computer using natural language in Ohana Act mode. Please read out the result of the command verbatim. Results: ${JSON.stringify(socketResponse)} `,
+    },
+  };
+  dc.send(JSON.stringify(responseCreate));
+}
+
 
 document.getElementById("talkButton").addEventListener("click", () => {
   if (pc && pc.connectionState === "connected") {

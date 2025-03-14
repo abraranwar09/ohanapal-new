@@ -11,26 +11,26 @@ function connectWebSocket() {
         websocket.send(`{"type": "start-session"}`);
     };
 
-    const alertContainer = document.getElementById('alertContainer');
-    alertContainer.innerHTML = '';
-    alertContainer.innerHTML = `
-      <div class="perplexity-alert">
-        <div class="perplexity-header">
-            <div class="perplexity-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/668/668757.png" alt="Perplexity AI">
-            </div>
-            <div class="perplexity-title">Websocket Connection established</div>
-            <div class="loading-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                 <div class="dot"></div>
-            </div>
-         </div>
-        </div>        
-    `
-    setTimeout(() => {
-        alertContainer.innerHTML = '';
-    }, 3000);
+    // const alertContainer = document.getElementById('alertContainer');
+    // alertContainer.innerHTML = '';
+    // alertContainer.innerHTML = `
+    //   <div class="perplexity-alert">
+    //     <div class="perplexity-header">
+    //         <div class="perplexity-icon">
+    //             <img src="https://cdn-icons-png.flaticon.com/512/668/668757.png" alt="Perplexity AI">
+    //         </div>
+    //         <div class="perplexity-title">Websocket Connection established</div>
+    //         <div class="loading-dots">
+    //             <div class="dot"></div>
+    //             <div class="dot"></div>
+    //              <div class="dot"></div>
+    //         </div>
+    //      </div>
+    //     </div>        
+    // `
+    // setTimeout(() => {
+    //     alertContainer.innerHTML = '';
+    // }, 3000);
 
     // websocket.onmessage = (event) => {
     //     console.log('Received message:', event.data);
@@ -48,23 +48,23 @@ function connectWebSocket() {
 }
 
 async function reconnectWebSocket() {
-    const alertContainer = document.getElementById('alertContainer');
-    alertContainer.innerHTML = '';
-    alertContainer.innerHTML = `
-      <div class="perplexity-alert">
-        <div class="perplexity-header">
-            <div class="perplexity-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/668/668757.png" alt="Perplexity AI">
-            </div>
-            <div class="perplexity-title">Websocket Connection lost. Attempting to reconnect</div>
-            <div class="loading-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                 <div class="dot"></div>
-            </div>
-         </div>
-        </div>        
-    `
+    // const alertContainer = document.getElementById('alertContainer');
+    // alertContainer.innerHTML = '';
+    // alertContainer.innerHTML = `
+    //   <div class="perplexity-alert">
+    //     <div class="perplexity-header">
+    //         <div class="perplexity-icon">
+    //             <img src="https://cdn-icons-png.flaticon.com/512/668/668757.png" alt="Perplexity AI">
+    //         </div>
+    //         <div class="perplexity-title">Websocket Connection lost. Attempting to reconnect</div>
+    //         <div class="loading-dots">
+    //             <div class="dot"></div>
+    //             <div class="dot"></div>
+    //              <div class="dot"></div>
+    //         </div>
+    //      </div>
+    //     </div>        
+    // `
     console.log('Reconnecting to WebSocket...');
     connectWebSocket();
 }

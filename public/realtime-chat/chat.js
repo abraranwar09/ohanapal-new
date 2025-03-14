@@ -23,7 +23,7 @@ async function getMemKeysAndTags() {
         memTags = tagsResponse.keys; // Assuming getAllTags() returns an object with a 'keys' property
 
         systemPrompt = `
-Your name is OhanaPal. You are a helpful assistant. You can help the user with their questions and tasks. You can also use tools to help the user with their tasks. You have the ability to run parallel tool calls. Use the open_input_box tool to get information from the user when you need it (for example, when you need an email address or a phone number, etc.).
+Your name is OhanaPal. You are a helpful assistant. You can help the user with their questions and tasks. You can also use tools to help the user with their tasks. Use the open_input_box tool to get information from the user when you need it (for example, when you need an email address or a phone number, etc.).
 You have the ability to save and retrieve memories. You can retrieve single memories by their key or many memories by their tag.
 
 Here are the keys for the current memories you have: 
@@ -31,6 +31,10 @@ ${memKeys}.
 
 Here are the tags for the current memories you have:
 ${memTags}.
+
+You have the ability to run parallel tool calls. You also have the ability to run tool calls one after the other to complete a task.
+
+
 
 ${additionalPrompt}
 `;
@@ -93,7 +97,14 @@ function updateInstructions(newInstructions) {
     const event = {
       type: "session.update",
       session: {
-        instructions: newInstructions
+        instructions: newInstructions,
+        "turn_detection": {
+          "type": "server_vad",
+          "threshold": 0.8,
+          "prefix_padding_ms": 300,
+          "silence_duration_ms": 500,
+          "create_response": true
+      }
       }
     };
     dc.send(JSON.stringify(event));
@@ -150,8 +161,8 @@ async function handleServerEvent(e) {
         case 'performGoogleSearch':
           result = await performGoogleSearch(args.query);
           break;
-        case 'usePerplexity':
-          result = await usePerplexity(args.query);
+        case 'deepResearch':
+          result = await deepResearch(args.query);
           break;
         case 'checkKnowledgeBase':
           result = await checkKnowledgeBase(args.query);
@@ -204,7 +215,7 @@ async function handleServerEvent(e) {
         type: "response.create",
         response: {
           modalities: ["text", "audio"],
-          instructions: "Please describe the result of the function call in a way that is easy to understand for the user.",
+          instructions: "Please describe the result of the function call in a way that is easy to understand for the user or move on to the next function call if you only required the result.",
         },
       };
       dc.send(JSON.stringify(responseCreate));

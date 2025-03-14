@@ -30,8 +30,8 @@ async function handleToolCalls(data, skeletonLoader) {
                 case 'performGoogleSearch':
                     functionResponse = await performGoogleSearch(args.query);
                     break;
-                case 'usePerplexity':
-                    functionResponse = await usePerplexity(args.query);
+                case 'deepResearch':
+                    functionResponse = await deepResearch(args.query);
                     break;
                 case 'checkKnowledgeBase':
                     functionResponse = await checkKnowledgeBase(args.query);

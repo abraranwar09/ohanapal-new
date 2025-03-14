@@ -80,6 +80,24 @@ async function listGmailMessages(maxResults, query) {
     const accessToken = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
 
+    const alertContainer = document.getElementById('alertContainer');
+    alertContainer.innerHTML = '';
+    alertContainer.innerHTML = `
+      <div class="perplexity-alert">
+        <div class="perplexity-header">
+            <div class="perplexity-icon">
+                <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Perplexity AI">
+            </div>
+            <div class="perplexity-title">Retrieving your emails</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                 <div class="dot"></div>
+            </div>
+         </div>
+        </div>        
+    `
+
     try {
         const response = await fetch("/google/gmail/messages", {
             method: "POST",
@@ -102,6 +120,41 @@ async function listGmailMessages(maxResults, query) {
         }
 
         const data = await response.json();
+        console.log('Gmail data:', data);
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `
+        <div class="perplexity-alert">
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <!-- Email List Header -->
+        <div style="background-color: #f8f9fa; padding: 12px 16px; border-bottom: 1px solid #e0e0e0;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #333;">Inbox</h3>
+            <button class="close-button" onclick="closePerplexityAlert()">×</button>
+        </div>
+  
+    <!-- Email List Items -->
+    <div style="max-height: 400px; overflow-y: auto;" id="emailList">
+
+
+    </div>
+    </div>
+        `
+        const emailList = document.getElementById('emailList');
+        data.forEach(email => {
+            emailList.innerHTML += `
+            <!-- Email Item 2 -->
+        <div style="padding: 12px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background-color 0.2s; display: flex; flex-direction: column; gap: 4px;" onmouseover="this.style.backgroundColor='#f5f5f5'" onmouseout="this.style.backgroundColor='transparent'">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 600; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;">${email.from}</span>
+            <span style="font-size: 12px; color: #666;">${email.date}</span>
+        </div>
+        <div style="font-weight: 600; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${email.subject}</div>
+        <div style="font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${email.snippet}</div>
+        </div>
+        
+        </div>
+            `
+        });
+        
         return {
             "emails": data
         };
@@ -118,6 +171,25 @@ async function listGmailMessages(maxResults, query) {
 async function getGmailMessage(messageId) {
     const accessToken = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
+
+    const alertContainer = document.getElementById('alertContainer');
+    alertContainer.innerHTML = '';
+    alertContainer.innerHTML = `
+      <div class="perplexity-alert">
+        <div class="perplexity-header">
+            <div class="perplexity-icon">
+                <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Perplexity AI">
+            </div>
+            <div class="perplexity-title">Retrieving your desired email</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                 <div class="dot"></div>
+            </div>
+         </div>
+        </div>        
+    `
+
 
     try {
         const response = await fetch(`/google/gmail/message/${messageId}`, {
@@ -136,6 +208,45 @@ async function getGmailMessage(messageId) {
         }
 
         const data = await response.json();
+        console.log('Gmail message:', data);
+
+        alertContainer.innerHTML = '';
+        alertContainer.innerHTML = `
+        <div class="perplexity-alert">
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); background-color: white;">
+  <!-- Email Header -->
+  <div style="padding: 16px; border-bottom: 1px solid #e0e0e0; background-color: #f8f9fa;">
+    <div style="margin-bottom: 16px;">
+      <h2 style="margin: 0 0 12px 0; font-size: 18px; font-weight: 600; color: #333;">${data.headers.subject}</h2>
+        <button class="close-button" onclick="closePerplexityAlert()">×</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #5865F2; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;">${data.headers.from.charAt(0).toUpperCase()}${data.headers.from.charAt(5).toUpperCase()}</div>
+          <div>
+            <div style="font-weight: 600; font-size: 14px; color: #333;">${data.headers.from}</div>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 8px;">${data.headers.date}</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px;">
+      <div style="min-width: 200px;">
+        <span style="color: #666; margin-right: 4px;">To:</span>
+        <span style="color: #333;">${data.headers.to}</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Email Body -->
+  <div style="padding: 20px; color: #333; font-size: 14px; line-height: 1.6;">
+    <p style="margin-bottom: 16px;">${data.snippet}</p>
+    <p style="margin-bottom: 16px;">${data.body}</p>
+    
+    
+  </div>
+</div>
+            
+        </div>`
         return data;
 
     } catch (error) {
@@ -151,6 +262,24 @@ async function getGmailMessage(messageId) {
 async function sendGmailMessage(to, subject, body, cc, bcc, isHtml) {
     const accessToken = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
+
+    const alertContainer = document.getElementById('alertContainer');
+    alertContainer.innerHTML = '';
+    alertContainer.innerHTML = `
+      <div class="perplexity-alert">
+        <div class="perplexity-header">
+            <div class="perplexity-icon">
+                <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Perplexity AI">
+            </div>
+            <div class="perplexity-title">Sending your email to ${to}</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                 <div class="dot"></div>
+            </div>
+         </div>
+        </div>        
+    `
 
     try {
         const response = await fetch("/google/gmail/send", {
@@ -173,7 +302,31 @@ async function sendGmailMessage(to, subject, body, cc, bcc, isHtml) {
         }
 
         const data = await response.json();
+        const alertContainer = document.getElementById('alertContainer');
+    alertContainer.innerHTML = '';
+    alertContainer.innerHTML = `
+      <div class="perplexity-alert">
+        <div class="perplexity-header">
+            <div class="perplexity-icon">
+                <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Perplexity AI">
+            </div>
+            <div class="perplexity-title">Email sent successfully</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                 <div class="dot"></div>
+            </div>
+         </div>
+        </div>        
+    `
+
+        setTimeout(() => {
+            alertContainer.innerHTML = '';
+        }, 3000);
+        
         return data;
+
+        
 
     } catch (error) {
         console.error('Error sending email:', error);
@@ -216,8 +369,26 @@ async function performGoogleSearch(query) {
     }
 }
 
-async function usePerplexity(query) {
+async function deepResearch(query) {
     const userId = localStorage.getItem('userId');
+    const perplexityAlert = document.getElementById('alertContainer');
+
+    perplexityAlert.innerHTML = '';
+    perplexityAlert.innerHTML = `                
+                        <div class="perplexity-alert">
+                        <div class="perplexity-header">
+            <div class="perplexity-icon">
+                <img src="https://brandlogo.org/wp-content/uploads/2024/09/Perplexity-AI-App-Icon-2023.png" alt="Perplexity AI">
+            </div>
+            <div class="perplexity-title">Performing deep research</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+`
 
     try {
         const response = await fetch("/perplexity/chat", {
@@ -225,9 +396,9 @@ async function usePerplexity(query) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 query,
-                userId 
+                userId
             })
         });
 
@@ -236,7 +407,25 @@ async function usePerplexity(query) {
         }
 
         const data = await response.json();
+        console.log('Perplexity data:', data);
+
+        perplexityAlert.innerHTML = '';
+        perplexityAlert.innerHTML = `
+                    <div class="perplexity-alert">
+            <div class="perplexity-header">
+                <div class="perplexity-icon">
+                    <img src="https://brandlogo.org/wp-content/uploads/2024/09/Perplexity-AI-App-Icon-2023.png" alt="Perplexity AI">
+                </div>
+                <div class="perplexity-title">Your deep research results</div>
+                <button class="close-button" onclick="closePerplexityAlert()">×</button>
+            </div>
+            <div class="perplexity-content">
+                ${data.response}
+            </div>
+        </div>  
+        `;
         return data;
+
 
     } catch (error) {
         console.error('Error using Perplexity:', error);
@@ -291,9 +480,9 @@ async function scrapeWeb(url) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 url,
-                userId 
+                userId
             })
         });
 
@@ -317,10 +506,11 @@ async function open_google(query) {
 
     const url = `https://www.google.com/search?q=${query}`;
     window.open(url, '_blank');
-    return {"status": "success",
-      "message": `Google opened for: ${query}`
+    return {
+        "status": "success",
+        "message": `Google opened for: ${query}`
     };
-  }
+}
 
 //computer control function
 
@@ -420,7 +610,7 @@ async function open_input_box(placeholder) {
     const messageInput = document.getElementById('messageInput');
     messageInput.placeholder = placeholder;
 
-   document.getElementById('showInput').click();
+    document.getElementById('showInput').click();
 
     return {
         "status": "success",
@@ -433,7 +623,7 @@ async function close_input_box() {
     const messageInput = document.getElementById('messageInput');
     messageInput.placeholder = 'Type your message...';
 
-   document.getElementById('showInput').click();
+    document.getElementById('showInput').click();
 
     return {
         "status": "success",
@@ -479,7 +669,7 @@ async function saveMemory(memory, key, tags) {
             </div>
             <div class="memory-alert-text">Memory updated</div>
         </div>`
-        
+
         return data;
     } catch (error) {
         console.error('Error saving memory:', error);
@@ -606,7 +796,7 @@ async function rememberByKey(key) {
             <div class="memory-alert-text">Memory retrieved for key: ${key}</div>
         </div>`
 
-    
+
         return data;
     } catch (error) {
         console.error('Error retrieving memory:', error);
@@ -660,8 +850,8 @@ async function rememberByTag(tag) {
 
 async function updateMemory(key, updates) {
 
-    const email = localStorage.getItem('email');    
-    
+    const email = localStorage.getItem('email');
+
     if (!email) {
         throw new Error('Email is required to update a memory.');
     }
@@ -711,4 +901,13 @@ async function updateMemory(key, updates) {
         };
     }
 }
+
+// Add this JavaScript function to handle the close button click
+function closePerplexityAlert() {
+    const alertElement = document.querySelector('.perplexity-alert');
+    if (alertElement) {
+        alertElement.remove();
+    }
+}
+
 

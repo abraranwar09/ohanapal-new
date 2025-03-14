@@ -151,7 +151,7 @@ const tools = [
     {
         type: "function",
         function: {
-            name: "usePerplexity",
+            name: "deepResearch",
             description: "Search for information on the web using Perplexity AI. Whenever asked to search the web, use this tool.",
             parameters: {
                 type: "object",

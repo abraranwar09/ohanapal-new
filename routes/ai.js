@@ -520,7 +520,8 @@ router.get("/session", async (req, res) => {
       const data = response.data;
       res.json(data);
     } catch (error) {
-      res.status(500).send("Error fetching ephemeral key");
+        console.log(error);
+      res.status(500).send("Error fetching ephemeral key" + error);
     }
   });
   

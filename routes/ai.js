@@ -60,7 +60,7 @@ router.post("/chat", async (req, res) => {
               custom_prompt ||
               `
                         Your name is OhanaPal. You are a helpful assistant. You can use your tools to help the user with their queries.
-                        Format your responses as structured HTML with the appropriate tags and styling like lists, paragraphs, etc. 
+                        Format your responses as structured HTML with the appropriate tags and styling like lists, paragraphs, etc.
                         Only respond in HTML no markdown. You have the ability to run parallel tool calls.
                     `,
           },
@@ -679,5 +679,52 @@ router.post("/edit-image", async (req, res) => {
     return res.status(500).json("Error generating content");
   }
 });
+
+router.post('/vision-analysis', async (req, res) => {
+  console.log(process.env.GEMINI_API_KEY)
+  try {
+    // Check if image file is provided
+    if (!req.files || !req.files.image) {
+      return res.status(400).json({ error: 'Image file is required' })
+    }
+
+    console.log('[Vision Analysis] Starting image analysis request')
+    const imageFile = req.files.image
+    const prompt =
+      req.body.prompt ||
+      'Analyze this image and describe what you see in detail.'
+
+    // Convert image to base64
+    const imageBase64 = imageFile.data.toString('base64')
+
+    // Initialize the Gemini Pro Vision model
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+
+    // Create image part for the model
+    const imagePart = {
+      inlineData: {
+        data: imageBase64,
+        mimeType: imageFile.mimetype,
+      },
+    }
+
+    console.log('[Vision Analysis] Sending request to Gemini API')
+    // Generate content with the image and prompt
+    const result = await model.generateContent([prompt, imagePart])
+    const response = await result.response
+    const text = response.text()
+
+    console.log('[Vision Analysis] Successfully received analysis from Gemini')
+    // Return the analysis result
+    res.json({ analysis: text })
+  } catch (error) {
+    console.error('[Vision Analysis] Error:', error)
+    res.status(500).json({
+      error: 'Vision analysis failed',
+      details: error.message,
+    })
+  }
+})
+
 
 module.exports = router;

@@ -280,7 +280,36 @@ const tools = [
         type: "function",
         name: "closeOhanaAct",
         description: "Closes the Ohana Act mode."
-    }
+    },
+    {
+        type: "function",
+        name: "generateImage",
+        description: "Create image of the content user asked for. Use this tool whenever you need to generate an image.",
+    },
+    {
+        type: "function",
+        name: "editExistingImage",
+        description: "Edit an existing image with given prompts. Use this tool whenever you need to edit an existing image.",
+        parameters: {
+            type: "object",
+            properties: {
+                imagePaths: {
+                    type: "array",
+                    items: {
+                        type: "string"
+                    },
+                    description: "Array of image paths to edit.",
+                },
+                editInstruction: {
+                    type: "string",
+                    description: "Common edit instruction for all images."
+                }
+            },
+            required: ["imagePaths", "editInstruction"],
+            additionalProperties: false
+        }
+
+    },
 ];
 
 // Make tools available globally

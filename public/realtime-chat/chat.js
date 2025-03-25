@@ -200,6 +200,12 @@ async function handleServerEvent(e) {
         case 'closeOhanaAct':
           result = await closeOhanaAct();
           break;
+        case 'generateImage':
+          result = await generateImage();
+          break;
+        case 'editExistingImage':
+          result = await editExistingImage();
+          break;
         default:
           console.warn(`Unhandled function name: ${name}`);
           return;

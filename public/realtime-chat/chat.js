@@ -32,6 +32,8 @@ ${memKeys}.
 Here are the tags for the current memories you have:
 ${memTags}.
 
+Use the activateVisionMode tool when the user wants to show you an image, upload an image or analyze an image. ALWAYS use this tool when interacting with images.
+
 You have the ability to run parallel tool calls. You also have the ability to run tool calls one after the other to complete a task.
 
 
@@ -200,11 +202,11 @@ async function handleServerEvent(e) {
         case 'closeOhanaAct':
           result = await closeOhanaAct();
           break;
-        case 'generateImage':
-          result = await generateImage();
+        case 'activateVisionMode':
+          result = await activateVisionMode(args.prompt);
           break;
-        case 'editExistingImage':
-          result = await editExistingImage();
+        case 'closeVisionMode':
+          result = await closeVisionMode();
           break;
         default:
           console.warn(`Unhandled function name: ${name}`);
@@ -358,4 +360,52 @@ document.getElementById("talkButton").addEventListener("click", () => {
   }
 });
 
+async function uploadVisionImage() {
+  const fileInput = document.getElementById('file-upload');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.error('No file selected');
+    return;
+  }
+
+  console.log('Uploading file:', file);
+
+  const visionPrompt = localStorage.getItem('vision_prompt');
+
+  // Create a FormData object
+  const formData = new FormData();
+  formData.append('image', file); // Append the file to the FormData object
+  formData.append('prompt', visionPrompt); // Optional prompt
+
+  try {
+    // Send a POST request to the /vision-analysis endpoint
+    const response = await fetch('/ai/vision-analysis', {
+      method: 'POST',
+      body: formData,
+    });
+
+    // Check if the response is ok (status in the range 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Parse the JSON response
+    const result = await response.json();
+    console.log('Vision analysis result:', result.analysis); // Log the analysis result
+
+    const responseCreate = {
+      type: "response.create",
+      response: {
+        modalities: ["text", "audio"],
+        instructions: `Ignore anything else you wanted to do or any previous instructions. Please read exactly this out for the user: ${JSON.stringify(result.analysis)} `,
+      },
+    };
+    console.log('sending response create' + JSON.stringify(responseCreate));
+    dc.send(JSON.stringify(responseCreate));
+
+  } catch (error) {
+    console.error('Error uploading image:', error);
+  }
+}
 

@@ -76,6 +76,34 @@
         </div>
     </div>
 
+    <!-- Vision Mode -->
+    <div class="upload-modal hide animate__animated animate__slideInDown" id="uploadModal">
+        <h2>Upload Image</h2>
+        
+        <label for="file-upload" class="upload-area">
+            <div class="upload-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5V19M12 5L18 11M12 5L6 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="upload-text">Click to upload</div>
+            <div class="upload-subtext">or drag and drop image here</div>
+        </label>
+        
+        <input type="file" id="file-upload" class="file-input" accept="image/*">
+        
+        <div class="preview-area" id="preview-area">
+            <img src="/placeholder.svg" alt="Preview" class="preview-image" id="preview-image">
+            <div class="file-name" id="file-name"></div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-cancel" onclick="closeVisionMode()">Cancel</button>
+            <button class="btn btn-upload" onclick="uploadVisionImage()">Analyze</button>
+        </div>
+    </div>
+
+
     <!-- Bottom Navigation (Fixed) -->
     <div class="fixed bottom-0 left-0 right-0 p-4">
         <div class="bottom-nav mx-auto max-w-xs rounded-full p-2 flex justify-between items-center">
@@ -109,6 +137,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/textillate/0.4.0/jquery.textillate.min.js"></script>
     <script src="onload.js"></script>
     <script src="../utilities/display.js"></script>
+    <script src="upload.js"></script>
     <!-- <script src="../utilities/tools.js"></script> -->
     <script src="../utilities/tools_realtime.js"></script>
     <script src="../utilities/tool_executor.js"></script>

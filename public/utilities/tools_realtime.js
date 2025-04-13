@@ -283,33 +283,16 @@ const tools = [
     },
     {
         type: "function",
-        name: "generateImage",
-        description: "Create image of the content user asked for. Use this tool whenever you need to generate an image.",
-    },
-    {
-        type: "function",
-        name: "editExistingImage",
-        description: "Edit an existing image with given prompts. Use this tool whenever you need to edit an existing image.",
+        name: "activateVisionMode",
+        description: "Activates the Vision Mode uploader. This mode allows the user to analyze images using the Gemini API. Activate this whenever a user wants to show you an image, upload an image or analyze an image",
         parameters: {
             type: "object",
             properties: {
-                imagePaths: {
-                    type: "array",
-                    items: {
-                        type: "string"
-                    },
-                    description: "Array of image paths to edit.",
-                },
-                editInstruction: {
-                    type: "string",
-                    description: "Common edit instruction for all images."
-                }
-            },
-            required: ["imagePaths", "editInstruction"],
-            additionalProperties: false
+                prompt: { type: "string", description: "The prompt to send to the Gemini API along with the image for analysis. Describe to gemeni what the user wants analyzed in the image. For example if the user wants to clean their room, the prompt should be 'analyze the image and describe the best way to clean the room'" }
+            }
         }
-
-    },
+    }
+    
 ];
 
 // Make tools available globally

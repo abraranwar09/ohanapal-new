@@ -682,7 +682,7 @@ router.post("/edit-image", async (req, res) => {
 
 router.post('/vision-analysis', async (req, res) => {
   console.log(process.env.GEMINI_API_KEY)
-  try {
+  try { 
     // Check if image file is provided
     if (!req.files || !req.files.image) {
       return res.status(400).json({ error: 'Image file is required' })

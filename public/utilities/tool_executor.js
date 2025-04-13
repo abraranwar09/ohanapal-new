@@ -910,4 +910,26 @@ function closePerplexityAlert() {
     }
 }
 
+async function activateVisionMode(prompt) {
+    const uploadModal = document.getElementById('uploadModal');
+    uploadModal.classList.remove('hide');
+
+    localStorage.setItem('vision_prompt', prompt);
+    // uploadModal.classList.add('animate__slideInDown');
+    return {
+        "status": "success",
+        "message": `Vision mode activated. Ask the user to upload an image.`
+    };
+}   
+
+async function closeVisionMode() {
+    const uploadModal = document.getElementById('uploadModal');
+    uploadModal.classList.add('hide');
+    // uploadModal.classList.add('animate__slideInUp');
+}
+
+
+
+
+
 
